@@ -44,7 +44,11 @@ function processEvent(event) {
 
                 console.log("Emmett: here we can use the parameters we collected to do something application specific");
 
-                console.log('test new output');
+                console.log('city:'+response.contexts.parameters['geo-city-us']);
+                console.log('productType:'+response.contexts.parameters['productType']);
+
+
+
 
                 let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
