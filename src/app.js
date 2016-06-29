@@ -44,10 +44,10 @@ function processEvent(event) {
 
                 console.log("Emmett: here we can use the parameters we collected to do something application specific");
 
-                if(response.result.contexts.parameters){
-                    console.log('test:' +JSON.stringify(response.result.contexts.parameters));
-                    console.log('city:'+response.result.contexts.parameters.geo-city-us);
-                    console.log('productType:'+response.result.contexts.parameters.productType);
+                if(response.result.parameters){
+                    console.log('test:' +JSON.stringify(response.result.parameters));
+                    console.log('city:'+response.result.parameters.geo-city-us);
+                    console.log('productType:'+response.result.parameters.productType);
                 }else{
 
                 }
