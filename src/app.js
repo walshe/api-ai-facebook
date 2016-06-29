@@ -40,9 +40,8 @@ function processEvent(event) {
         apiaiRequest.on('response', (response) => {
             if (isDefined(response.result)) {
 
-                console.log("Emmett: got result from api.ai - " +JSON.stringify(response));
+                console.log("Emmett: got result from api.ai - " +JSON.stringify(response, null, 2));
 
-                console.log("Emmett: here we can use the parameters we collected to do something application specific");
 
                 if(response.result && response.result.parameters){
                     console.log('....test:' +JSON.stringify(response.result.parameters));
