@@ -30,6 +30,8 @@ function processEvent(event) {
 
         console.log("Text", text);
 
+        console.log("Sending the text entered in Facebook Messenger and sendign it to api.ai agent to make sense out of it");
+
         let apiaiRequest = apiAiService.textRequest(text,
             {
                 sessionId: sessionIds.get(sender)
@@ -37,6 +39,11 @@ function processEvent(event) {
 
         apiaiRequest.on('response', (response) => {
             if (isDefined(response.result)) {
+
+                console.log("Emmett: got result from api.ai - " +JSON.stringify(response));
+
+                console.log("Emmett: here we can use the parameters we collected to do something application specific");
+
                 let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
                 let action = response.result.action;
