@@ -47,7 +47,7 @@ function processEvent(event) {
                 if(response.result.parameters){
                     console.log('test:' +JSON.stringify(response.result.parameters));
                     console.log('city:'+response.result.parameters['geo-city-us']);
-                    console.log('productType:'+response.result.parameters.productType);
+                    console.log('productType:'+response.result.parameters['productType']);
                 }else{
 
                 }
