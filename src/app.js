@@ -44,7 +44,7 @@ function processEvent(event) {
 
 
                 if(response.result && response.result.parameters){
-                    console.log('....test:' +JSON.stringify(response.result.parameters));
+                    //console.log('....test:' +JSON.stringify(response.result.parameters));
                     if(response.result.parameters['geo-city-us']){
                         console.log('city:'+response.result.parameters['geo-city-us']);
                     }
@@ -52,17 +52,28 @@ function processEvent(event) {
                         console.log('productType:'+response.result.parameters['productType']);
                     }
 
-                }else{
+                }
+
+                if(isDefined(response.result) && isDefined(response.result.action)){
+                    switch (response.result.action){
+
+                        //TODO
+                        case 'getProductsByProductTypeAndLocation':
+                            getProductsByProductTypeAndLocation('','');
+                            break;
+
+                        case 'getCouponByProductId':
+                            getCouponByProductId(1);
+                            break;
+                        default:
+
+                    }
 
                 }
 
-
-
-
-
-
                 let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
+
                 let action = response.result.action;
 
                 if (isDefined(responseData) && isDefined(responseData.facebook)) {
@@ -89,6 +100,15 @@ function processEvent(event) {
         apiaiRequest.on('error', (error) => console.error(error));
         apiaiRequest.end();
     }
+}
+
+
+function getProductsByProductTypeAndLocation(productType, location){
+    return null;
+}
+
+function getCouponByProductId(productId){
+    return null;
 }
 
 function splitResponse(str) {
@@ -187,6 +207,9 @@ const app = express();
 app.use(bodyParser.text({ type: 'application/json' }));
 
 app.get('/webhook/', function (req, res) {
+
+    console.log('webhook request:' +JSON.stringify(req));
+
     if (req.query['hub.verify_token'] == FB_VERIFY_TOKEN) {
         res.send(req.query['hub.challenge']);
         
