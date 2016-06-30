@@ -183,7 +183,7 @@ function sendFBMessage(sender, messageData, callback) {
                 "attachment":{
                     "type":"image",
                     "payload":{
-                        "url":"http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/Save!.png"
+                        "url":"http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/pass.pkpass"
                     }
                 }
             }
