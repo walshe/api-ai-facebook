@@ -54,32 +54,37 @@ function processEvent(event) {
 
                 }
 
-                if(isDefined(response.result) && isDefined(response.result.action)){
-                    switch (response.result.action){
-
-                        //TODO
-                        case 'getProductsByProductTypeAndLocation':
-                            getProductsByProductTypeAndLocation('','');
-                            break;
-
-                        case 'getCouponByProductId':
-                            getCouponByProductId(1);
-                            break;
-                        default:
-
-                    }
-
-                }
-
                 let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
 
                 let action = response.result.action;
+                let extraText;
+                let image;
+                switch (action){
+
+                    //TODO
+                    case 'getProductsByProductTypeAndLocation':
+                        extraText = getProductsByProductTypeAndLocation('','');
+                        break;
+
+                    case 'getCouponByProductId':
+                        image = getCouponByProductId(1);
+                        break;
+                    default:
+
+                }
+
 
                 if (isDefined(responseData) && isDefined(responseData.facebook)) {
                     try {
                         console.log('Response as formatted message');
                         sendFBMessage(sender, responseData.facebook);
+
+                        if(extraText){
+                            console.log('sending extra info');
+                            sendFBMessage(sender, extraText);
+                        }
+
                     } catch (err) {
                         sendFBMessage(sender, {text: err.message });
                     }
@@ -104,7 +109,7 @@ function processEvent(event) {
 
 
 function getProductsByProductTypeAndLocation(productType, location){
-    return null;
+    return "We found x,y and z products";
 }
 
 function getCouponByProductId(productId){
@@ -225,7 +230,7 @@ app.get('/webhook/', function (req, res) {
 app.post('/webhook/', function (req, res) {
     try {
 
-        console.log('post data:' + JSON.stringify(req.body));
+        console.log('post data' + JSON.stringify(req.body));
         var data = JSONbig.parse(req.body);
 
 
