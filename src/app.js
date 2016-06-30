@@ -183,7 +183,7 @@ function sendFBMessage(sender, messageData, callback) {
                 "attachment":{
                     "type":"image",
                     "payload":{
-                        "url":"https://petersapparel.com/img/shirt.png"
+                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg"
                     }
                 }
             }
@@ -230,6 +230,8 @@ function isDefined(obj) {
 const app = express();
 
 app.use(bodyParser.text({ type: 'application/json' }));
+
+app.use(express.static('public'));
 
 app.get('/webhook/', function (req, res) {
 
