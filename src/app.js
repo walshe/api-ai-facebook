@@ -54,6 +54,9 @@ function processEvent(event) {
 
                 }
 
+
+                console.log('fulfillment.data:'+response.result.fulfillment.data);
+
                 let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
 
@@ -216,8 +219,8 @@ app.use(bodyParser.text({ type: 'application/json' }));
 
 app.get('/webhook/', function (req, res) {
 
-    console.log('checking params');
-    console.log('webhook request query:' +JSON.stringify(req.params));
+    //console.log('checking params');
+    //console.log('webhook request query:' +JSON.stringify(req.params));
 
     if (req.query['hub.verify_token'] == FB_VERIFY_TOKEN) {
         res.send(req.query['hub.challenge']);
@@ -233,7 +236,7 @@ app.get('/webhook/', function (req, res) {
 app.post('/webhook/', function (req, res) {
     try {
 
-        console.log('post data' + JSON.stringify(req.body));
+        //console.log('post data' + JSON.stringify(req.body));
         var data = JSONbig.parse(req.body);
 
 
