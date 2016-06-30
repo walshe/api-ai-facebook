@@ -82,7 +82,7 @@ function processEvent(event) {
 
                         if(extraText){
                             console.log('sending extra info');
-                            sendFBMessage(sender, extraText);
+                            sendFBMessage(sender, {text:extraText});
                         }
 
                     } catch (err) {
