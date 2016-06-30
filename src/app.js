@@ -28,9 +28,9 @@ function processEvent(event) {
             sessionIds.set(sender, uuid.v1());
         }
 
-        console.log("Text from Facebook messenger:", text);
+        //console.log("Text from Facebook messenger:", text);
 
-        console.log("Sending the text entered in Facebook Messenger to out api.ai agent to make sense out of it");
+        //console.log("Sending the text entered in Facebook Messenger to out api.ai agent to make sense out of it");
 
         let apiaiRequest = apiAiService.textRequest(text,
             {
@@ -40,16 +40,16 @@ function processEvent(event) {
         apiaiRequest.on('response', (response) => {
             if (isDefined(response.result)) {
 
-                console.log("Emmett: got result from api.ai - " +JSON.stringify(response, null, 2));
+                //console.log("Emmett: got result from api.ai - " +JSON.stringify(response, null, 2));
 
 
                 if(response.result && response.result.parameters){
                     //console.log('....test:' +JSON.stringify(response.result.parameters));
                     if(response.result.parameters['geo-city-us']){
-                        console.log('city:'+response.result.parameters['geo-city-us']);
+                        //console.log('city:'+response.result.parameters['geo-city-us']);
                     }
                     if(response.result.parameters['productType']){
-                        console.log('productType:'+response.result.parameters['productType']);
+                        //console.log('productType:'+response.result.parameters['productType']);
                     }
 
                 }
@@ -64,13 +64,13 @@ function processEvent(event) {
                 let customText;
                 let image;
 
-                console.log('action is '+action);
+                //console.log('action is '+action);
                 switch (action){
 
                     //TODO
                     case 'getProductsByProductTypeAndLocation':
                         customText = getProductsByProductTypeAndLocation('','');
-                        console.log('extraText is '+customText);
+                        //console.log('extraText is '+customText);
                         break;
 
                     case 'getCouponByProductId':
@@ -266,7 +266,7 @@ app.get('/webhook/', function (req, res) {
 app.post('/webhook/', function (req, res) {
     try {
 
-        //console.log('post data' + JSON.stringify(req.body));
+        console.log('post data' + JSON.stringify(req.body));
         var data = JSONbig.parse(req.body);
 
 
