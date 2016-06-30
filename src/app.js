@@ -61,7 +61,7 @@ function processEvent(event) {
                 let responseData = response.result.fulfillment.data;
 
                 let action = response.result.action;
-                let extraText;
+                let customText;
                 let image;
 
                 console.log('action is '+action);
@@ -69,8 +69,8 @@ function processEvent(event) {
 
                     //TODO
                     case 'getProductsByProductTypeAndLocation':
-                        extraText = getProductsByProductTypeAndLocation('','');
-                        console.log('extraText is '+extraText);
+                        customText = getProductsByProductTypeAndLocation('','');
+                        console.log('extraText is '+customText);
                         break;
 
                     case 'getCouponByProductId':
@@ -97,10 +97,9 @@ function processEvent(event) {
                     // so we split message if needed
                     var splittedText = splitResponse(responseText);
 
-                    if(extraText){
+                    if(customText){
                         console.log('sending extra info');
-                        splittedText.push(extraText);
-                        //sendFBMessage(sender, {text:extraText});
+                        splittedText.push(customText);
                     }
 
                     async.eachSeries(splittedText, (textPart, callback) => {
@@ -180,7 +179,14 @@ function sendFBMessage(sender, messageData, callback) {
         method: 'POST',
         json: {
             recipient: {id: sender},
-            message: messageData
+            message:{
+                "attachment":{
+                    "type":"image",
+                    "payload":{
+                        "url":"https://petersapparel.com/img/shirt.png"
+                    }
+                }
+            }
         }
     }, function (error, response, body) {
         if (error) {
