@@ -180,26 +180,61 @@ function sendFBMessage(sender, messageData, callback) {
         json: {
             recipient: {id: sender},
             message:{
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "button",
-                        "text": "What do you want to do next?",
-                        "buttons": [
+                "attachment":{
+                    "type":"template",
+                    "payload":{
+                        "template_type":"generic",
+                        "elements":[
                             {
-                                "type": "web_url",
-                                "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
-                                "title": "Show Website"
+                                "title":"Classic White T-Shirt",
+                                "image_url":"http://petersapparel.parseapp.com/img/item100-thumb.png",
+                                "subtitle":"Soft white cotton t-shirt is back in style",
+                                "buttons":[
+                                    {
+                                        "type":"web_url",
+                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title":"View Item"
+                                    },
+                                    {
+                                        "type":"web_url",
+                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title":"Buy Item"
+                                    },
+                                    {
+                                        "type":"postback",
+                                        "title":"Bookmark Item",
+                                        "payload":"USER_DEFINED_PAYLOAD_FOR_ITEM100"
+                                    }
+                                ]
                             },
                             {
-                                "type": "postback",
-                                "title": "Start Chatting",
-                                "payload": "USER_DEFINED_PAYLOAD"
+                                "title":"Classic Grey T-Shirt",
+                                "image_url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                "subtitle":"Soft gray cotton t-shirt is back in style",
+                                "buttons":[
+                                    {
+                                        "type":"web_url",
+                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title":"View Item"
+                                    },
+                                    {
+                                        "type":"web_url",
+                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title":"Buy Item"
+                                    },
+                                    {
+                                        "type":"postback",
+                                        "title":"Bookmark Item",
+                                        "payload":"USER_DEFINED_PAYLOAD_FOR_ITEM101"
+                                    }
+                                ]
                             }
                         ]
                     }
                 }
             }
+
+
 
         }
     }, function (error, response, body) {
