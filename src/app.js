@@ -99,7 +99,7 @@ function processEvent(event) {
 
                     if(extraText){
                         console.log('sending extra info');
-                        splittedText += extraText;
+                        splittedText.push(extraText);
                         //sendFBMessage(sender, {text:extraText});
                     }
 
