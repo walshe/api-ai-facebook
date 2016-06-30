@@ -208,7 +208,8 @@ app.use(bodyParser.text({ type: 'application/json' }));
 
 app.get('/webhook/', function (req, res) {
 
-    console.log('webhook request:' +JSON.stringify(req));
+    console.log('webhook request query:' +req.query);
+    console.log('webhook request body:' +req.body);
 
     if (req.query['hub.verify_token'] == FB_VERIFY_TOKEN) {
         res.send(req.query['hub.challenge']);
