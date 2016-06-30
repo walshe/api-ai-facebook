@@ -224,9 +224,11 @@ app.get('/webhook/', function (req, res) {
 
 app.post('/webhook/', function (req, res) {
     try {
+
+        console.log('post data:' + JSON.stringify(req.body));
         var data = JSONbig.parse(req.body);
 
-        console.log('post data' + data);
+
 
         var messaging_events = data.entry[0].messaging;
         for (var i = 0; i < messaging_events.length; i++) {
