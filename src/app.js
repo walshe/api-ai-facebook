@@ -180,13 +180,27 @@ function sendFBMessage(sender, messageData, callback) {
         json: {
             recipient: {id: sender},
             message:{
-                "attachment":{
-                    "type":"image",
-                    "payload":{
-                        "url":"http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/pass.pkpass"
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "button",
+                        "text": "What do you want to do next?",
+                        "buttons": [
+                            {
+                                "type": "web_url",
+                                "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                "title": "Show Website"
+                            },
+                            {
+                                "type": "postback",
+                                "title": "Start Chatting",
+                                "payload": "USER_DEFINED_PAYLOAD"
+                            }
+                        ]
                     }
                 }
             }
+
         }
     }, function (error, response, body) {
         if (error) {
