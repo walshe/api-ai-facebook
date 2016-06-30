@@ -60,11 +60,14 @@ function processEvent(event) {
                 let action = response.result.action;
                 let extraText;
                 let image;
+
+                console.log('action is '+action);
                 switch (action){
 
                     //TODO
                     case 'getProductsByProductTypeAndLocation':
                         extraText = getProductsByProductTypeAndLocation('','');
+                        console.log('extraText is '+extraText);
                         break;
 
                     case 'getCouponByProductId':
