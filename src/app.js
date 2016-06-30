@@ -80,6 +80,10 @@ function processEvent(event) {
 
                 }
 
+                //test
+                sendFBMessage(sender, {text:extraText});
+                sendFBMessage(sender, {text:'another test'});
+
 
                 if (isDefined(responseData) && isDefined(responseData.facebook)) {
                     try {
