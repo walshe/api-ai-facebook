@@ -303,7 +303,12 @@ app.post('/webhook/', function (req, res) {
 
 
         var data = JSONbig.parse(req.body);
-        console.log('post data:' + JSON.stringify(data));
+        if(data){
+            console.log('post data:' + JSON.stringify(data));
+        }else{
+            console.log('no data');
+        }
+
 
 
         var messaging_events = data.entry[0].messaging;
