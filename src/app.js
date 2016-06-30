@@ -80,20 +80,13 @@ function processEvent(event) {
 
                 }
 
-                //test
-                sendFBMessage(sender, {text:extraText});
-                sendFBMessage(sender, {text:'another test'});
-
 
                 if (isDefined(responseData) && isDefined(responseData.facebook)) {
                     try {
                         console.log('Response as formatted message');
                         sendFBMessage(sender, responseData.facebook);
 
-                        if(extraText){
-                            console.log('sending extra info');
-                            sendFBMessage(sender, {text:extraText});
-                        }
+
 
                     } catch (err) {
                         sendFBMessage(sender, {text: err.message });
@@ -108,6 +101,12 @@ function processEvent(event) {
                         sendFBMessage(sender, {text: textPart}, callback);
                     });
                 }
+
+                if(extraText){
+                    console.log('sending extra info');
+                    sendFBMessage(sender, {text:extraText});
+                }
+
 
             }
         });
