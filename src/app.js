@@ -55,7 +55,7 @@ function processEvent(event) {
                 }
 
 
-                console.log('fulfillment.data:'+response.result.fulfillment.data);
+                //console.log('fulfillment.data:'+response.result.fulfillment.data);
 
                 let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
@@ -100,12 +100,14 @@ function processEvent(event) {
                     async.eachSeries(splittedText, (textPart, callback) => {
                         sendFBMessage(sender, {text: textPart}, callback);
                     });
+
+                    if(extraText){
+                        console.log('sending extra info');
+                        sendFBMessage(sender, {text:extraText});
+                    }
                 }
 
-                if(extraText){
-                    console.log('sending extra info');
-                    sendFBMessage(sender, {text:extraText});
-                }
+
 
 
             }
