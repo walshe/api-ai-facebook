@@ -7,6 +7,7 @@ const uuid = require('node-uuid');
 const request = require('request');
 const JSONbig = require('json-bigint');
 const async = require('async');
+const _ = require('underscore');
 
 const REST_PORT = (process.env.PORT || 5000);
 const APIAI_ACCESS_TOKEN = process.env.APIAI_ACCESS_TOKEN;
@@ -16,6 +17,74 @@ const FB_PAGE_ACCESS_TOKEN = process.env.FB_PAGE_ACCESS_TOKEN;
 
 const apiAiService = apiai(APIAI_ACCESS_TOKEN, {language: APIAI_LANG, requestSource: "fb"});
 const sessionIds = new Map();
+
+
+var db = {
+    restaurant : [
+        {
+            name: "5 Napkin Burger",
+            city: "New York",
+            image: "",
+            coupon: ""
+        },
+        {
+            name: "PJ Clarke's",
+            city: "New York",
+            image: "",
+            coupon: ""
+        },
+        {
+            name: "McDonalds",
+            city: "Boston",
+            image: "",
+            coupon: ""
+        }
+    ],
+
+    clothing : [
+        {
+            name: "The Gap",
+            city: "New York",
+            image: "",
+            coupon: ""
+        },
+        {
+            name: "Banana Republic",
+            city: "New York",
+            image: "",
+            coupon: ""
+        },
+        {
+            name: "Old Navy",
+            city: "Boston",
+            image: "",
+            coupon: ""
+        }
+
+    ]
+}
+
+var restaurantDatabase = [
+    {
+        name: "5 Napkin Burger",
+        city: "New York",
+        image: "",
+        coupon: ""
+    },
+    {
+        name: "PJ Clarke's",
+        city: "New York",
+        image: "",
+        coupon: ""
+    },
+    {
+        name: "McDonalds",
+        city: "Boston",
+        image: "",
+        coupon: ""
+    }
+]
+
 
 function processEvent(event) {
     var sender = event.sender.id.toString();
@@ -37,30 +106,75 @@ function processEvent(event) {
 
         apiaiRequest.on('response', (response) => {
             if (isDefined(response.result)) {
-            let responseText = response.result.fulfillment.speech;
-            let responseData = response.result.fulfillment.data;
-            let action = response.result.action;
+                let responseText = response.result.fulfillment.speech;
+                let responseData = response.result.fulfillment.data;
+                let action = response.result.action;
+                let actionIncomplete = response.result.actionIncomplete;
 
-            if (isDefined(responseData) && isDefined(responseData.facebook)) {
-                try {
-                    console.log('Response as formatted message');
-                    sendFBMessage(sender, responseData.facebook);
-                } catch (err) {
-                    sendFBMessage(sender, {text: err.message });
+
+                if (isDefined(responseData) && isDefined(responseData.facebook)) {
+                    try {
+                        console.log('Response as formatted message');
+                        sendFBMessage(sender, responseData.facebook);
+                    } catch (err) {
+                        sendFBMessage(sender, {text: err.message });
+                    }
+                } else if (isDefined(responseText)) {
+                    console.log('Response as text message');
+                    // facebook API limit for text length is 320,
+                    // so we split message if needed
+                    var splittedText = splitResponse(responseText);
+
+                    async.eachSeries(splittedText, (textPart, callback) => {
+                        sendFBMessage(sender, {text: textPart}, callback);
+                    });
                 }
-            } else if (isDefined(responseText)) {
-                console.log('Response as text message');
-                // facebook API limit for text length is 320,
-                // so we split message if needed
-                var splittedText = splitResponse(responseText);
 
-                async.eachSeries(splittedText, (textPart, callback) => {
-                    sendFBMessage(sender, {text: textPart}, callback);
-            });
+
+                //when we have collected certain info then do some app specific processing
+                if(action && !actionIncomplete){
+
+
+                    switch(action){
+
+                        case "getProductsByLocation":
+
+                            //use the product and city to get list from our fake database
+                            var city = response.result.parameters['geo-city-us'];
+                            var productType = response.result.parameters['product'];
+
+                            var products = [];
+
+                            if(db[productType]){
+
+                                _.each(db[productType], function(product){
+                                    if(product.city == city){
+                                        //collect
+                                        products.push(product);
+                                    }
+                                });
+
+                            }else{
+
+                            }
+
+                            console.log("found following matches for "+productType + " in " + city + " " +JSON.stringify(products));
+
+
+                            break;
+
+                        default:
+
+
+
+                    }
+
+                }
+
+
+
             }
-
-        }
-    });
+        });
 
         apiaiRequest.on('error', (error) => console.error(error));
         apiaiRequest.end();
@@ -182,12 +296,6 @@ app.post('/fb-webhook/', function (req, res) {
         console.log('post data:\n' + JSON.stringify(JSON.parse(req.body)));
 
         var data = JSONbig.parse(req.body);
-
-        /*if (data) {
-            console.log('post data:' + JSON.stringify(req.body, null, 4));
-        } else {
-            console.log('no data');
-        }*/
 
 
         var messaging_events = data.entry[0].messaging;
