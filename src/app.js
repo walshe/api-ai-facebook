@@ -303,7 +303,7 @@ app.post('/fb-webhook/', function (req, res) {
 
         var data = JSONbig.parse(req.body);
         if (data) {
-            console.log('post data:' + JJSON.stringify(data, null, 4));
+            console.log('post data:' + JSON.stringify(data, null, 4));
         } else {
             console.log('no data');
         }
