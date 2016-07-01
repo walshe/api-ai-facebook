@@ -338,9 +338,9 @@ function sendFBProductList(sender,products, callback){
     _.each(products, function(product){
 
 
-        let postbackPayload = {
-            fb_action : 'GET_COUPON',
-            productId : product.id
+        var postbackPayload = {
+            'productId' : product.id,
+            'fb_action': 'GET_COUPON'
         };
 
         elements.push( {
