@@ -22,69 +22,59 @@ const sessionIds = new Map();
 var db = {
     restaurant : [
         {
+            productId: 1,
             name: "5 Napkin Burger",
             city: "New York",
-            image: "",
-            coupon: ""
+            url: "http://5napkinburger.com/",
+            image: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/5%20Napkin%20Burger/5%20Napkin%20Logo.jpg",
+            coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         },
         {
+            productId: 2,
             name: "PJ Clarke's",
             city: "New York",
-            image: "",
-            coupon: ""
+            url: "http://pjclarkes.com/",
+            image: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/PJ%20Clarke's/P.J.-CLARKE%E2%80%99S.jpg",
+            coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         },
         {
+            productId: 3,
             name: "McDonalds",
             city: "Boston",
-            image: "",
-            coupon: ""
+            url: "http://www.mcdonalds.com/us/en/home.html",
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Mcdonalds-90s-logo.svg/2000px-Mcdonalds-90s-logo.svg.png",
+            coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         }
     ],
 
     clothing : [
         {
+            productId: 4,
             name: "The Gap",
             city: "New York",
-            image: "",
-            coupon: ""
+            url: "http://www.gap.com/",
+            image: "https://lh6.ggpht.com/LKRb7hffPEcZOvKWHUpGo-7ajEYkcMXQw8ewHldpydXfl0hG2K4Ae35NxffRmUU4LZmM=w300",
+            coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         },
         {
+            productId: 5,
             name: "Banana Republic",
             city: "New York",
-            image: "",
-            coupon: ""
+            url: "http://bananarepublic.com/",
+            image: "http://images.military.com/media/mail/deals-and-discounts/bananarepublic.jpg",
+            coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         },
         {
+            productId: 6,
             name: "Old Navy",
             city: "Boston",
-            image: "",
-            coupon: ""
+            url: "www.oldnavy.com",
+            image: "http://res.cloudinary.com/goodsearch/image/upload/v1439940283/hi_resolution_merchant_logos/old-navy_coupons.jpg",
+            coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         }
 
     ]
 }
-
-var restaurantDatabase = [
-    {
-        name: "5 Napkin Burger",
-        city: "New York",
-        image: "",
-        coupon: ""
-    },
-    {
-        name: "PJ Clarke's",
-        city: "New York",
-        image: "",
-        coupon: ""
-    },
-    {
-        name: "McDonalds",
-        city: "Boston",
-        image: "",
-        coupon: ""
-    }
-]
-
 
 function processEvent(event) {
     var sender = event.sender.id.toString();
@@ -139,6 +129,8 @@ function processEvent(event) {
 
                         case "getProductsByLocation":
 
+                            sendFBProcessingMessage(sender,true);
+
                             //use the product and city to get list from our fake database
                             var city = response.result.parameters['geo-city-us'];
                             var productType = response.result.parameters['product'];
@@ -154,8 +146,13 @@ function processEvent(event) {
                                     }
                                 });
 
-                            }else{
+                                sendFBProcessingMessage(sender,false);
 
+                                sendFBProductList(sender,products);
+
+
+                            }else{
+                                sendFBMessage(sender, {text: "Could not find any results :(" });
                             }
 
                             console.log("found following matches for "+productType + " in " + city + " " +JSON.stringify(products));
@@ -232,6 +229,92 @@ function sendFBMessage(sender, messageData, callback) {
         json: {
             recipient: {id: sender},
             message: messageData
+        }
+    }, function (error, response, body) {
+        if (error) {
+            console.log('Error sending message: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+
+        if (callback) {
+            callback();
+        }
+    });
+}
+
+
+function sendFBProcessingMessage(sender, typingOnOrOff, callback){
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: FB_PAGE_ACCESS_TOKEN},
+        method: 'POST',
+        json: {
+            recipient: {id: sender},
+            sender_action: (typingOnOrOff) ? "typing_on" : "typing_off" ;
+        }
+    }, function (error, response, body) {
+        if (error) {
+            console.log('Error sending message: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+
+        if (callback) {
+            callback();
+        }
+    });
+}
+
+function sendFBProductList(sender,products, callback){
+
+    let elements = [];
+
+    _.each(products, function(product){
+
+
+        let postbackPayload = {
+            fb_action : 'GET_COUPON',
+            productId : product.id
+        };
+
+        elements.push( {
+                "title":product.name,
+                "image_url":product.image,
+                "subtitle":"todo",
+                "buttons":[
+                    {
+                        "type":"web_url",
+                        "url": product.url,
+                        "title":"View Website"
+                    },
+                    {
+                        "type":"postback",
+                        "title":"Get Coupon",
+                        "payload": JSON.stringify(postbackPayload)
+                    }
+                ]
+            }
+        );
+
+    });
+
+
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: FB_PAGE_ACCESS_TOKEN},
+        method: 'POST',
+        json: {
+            recipient: {id: sender},
+            "message":{
+                "attachment":{
+                    "type":"template",
+                    "payload":{
+                        "template_type":"generic",
+                        "elements": elements
+                    }
+                }
+            }
         }
     }, function (error, response, body) {
         if (error) {
