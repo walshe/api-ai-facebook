@@ -34,7 +34,7 @@ var db = {
             name: "PJ Clarke's",
             city: "New York",
             url: "http://pjclarkes.com/",
-            image: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/PJ%20Clarke's/P.J.-CLARKE%E2%80%99S.jpg",
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/P.J._Clarke's.jpg/300px-P.J._Clarke's.jpg",
             coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         },
         {
@@ -176,6 +176,41 @@ function processEvent(event) {
         apiaiRequest.on('error', (error) => console.error(error));
         apiaiRequest.end();
     }
+
+
+    if(event.postback && event.postback.payload){
+
+        let payload = JSON.parse(event.postback.payload);
+
+        let productId = payload.productId;
+
+        let fbAction = payload['fb_action'];
+
+
+        if(fbAction == 'GET_COUPON'){
+
+            //find coupon for that productId
+
+            _.each(db.restaurant, function(restaurant){
+                if(restaurant.productId == productId){
+                    sendFBImage(sender, restaurant.coupon);
+                }
+            })
+
+            _.each(db.clothing, function(clothingStore){
+                if(clothingStore.productId == productId){
+                    sendFBImage(sender, clothingStore.coupon);
+                }
+            })
+
+
+
+        }
+
+
+
+    }
+
 }
 
 function splitResponse(str) {
@@ -255,7 +290,37 @@ function sendFBProcessingMessage(sender, typingOnOrOff, callback){
         }
     }, function (error, response, body) {
         if (error) {
-            console.log('Error sending message: ', error);
+            console.log('Error sending processing message: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+
+        if (callback) {
+            callback();
+        }
+    });
+}
+
+
+function sendFBImage(sender, imageUrl, callback){
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: FB_PAGE_ACCESS_TOKEN},
+        method: 'POST',
+        json: {
+            recipient: {id: sender},
+            "message":{
+                "attachment":{
+                    "type":"image",
+                    "payload":{
+                        "url": imageUrl
+                    }
+                }
+            }
+        }
+    }, function (error, response, body) {
+        if (error) {
+            console.log('Error sending image: ', error);
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
         }
@@ -318,7 +383,7 @@ function sendFBProductList(sender,products, callback){
         }
     }, function (error, response, body) {
         if (error) {
-            console.log('Error sending message: ', error);
+            console.log('Error sending product list: ', error);
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
         }
