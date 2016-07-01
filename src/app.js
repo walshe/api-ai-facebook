@@ -37,101 +37,103 @@ function processEvent(event) {
                 sessionId: sessionIds.get(sender)
             });
 
-        apiaiRequest.on('response', (response) => {
-            if (isDefined(response.result)) {
+        apiaiRequest.on('response', (response) = > {
+            if (isDefined(response.result)
+    )
+        {
 
-                //console.log("Emmett: got result from api.ai - " +JSON.stringify(response, null, 2));
+            //console.log("Emmett: got result from api.ai - " +JSON.stringify(response, null, 2));
 
 
-                if(response.result && response.result.parameters){
-                    //console.log('....test:' +JSON.stringify(response.result.parameters));
-                    if(response.result.parameters['geo-city-us']){
-                        //console.log('city:'+response.result.parameters['geo-city-us']);
-                    }
-                    if(response.result.parameters['productType']){
-                        //console.log('productType:'+response.result.parameters['productType']);
-                    }
-
+            if (response.result && response.result.parameters) {
+                //console.log('....test:' +JSON.stringify(response.result.parameters));
+                if (response.result.parameters['geo-city-us']) {
+                    //console.log('city:'+response.result.parameters['geo-city-us']);
+                }
+                if (response.result.parameters['productType']) {
+                    //console.log('productType:'+response.result.parameters['productType']);
                 }
 
+            }
 
-                //console.log('fulfillment.data:'+response.result.fulfillment.data);
 
-                let responseText = response.result.fulfillment.speech;
-                let responseData = response.result.fulfillment.data;
+            //console.log('fulfillment.data:'+response.result.fulfillment.data);
 
-                let action = response.result.action;
-                let customText;
-                let image;
+            let responseText = response.result.fulfillment.speech;
+            let responseData = response.result.fulfillment.data;
 
-                //console.log('action is '+action);
-                switch (action){
+            let action = response.result.action;
+            let customText;
+            let image;
 
-                    //TODO
-                    case 'getProductsByProductTypeAndLocation':
-                        customText = getProductsByProductTypeAndLocation('','');
-                        //console.log('extraText is '+customText);
-                        break;
+            //console.log('action is '+action);
+            switch (action) {
 
-                    case 'getCouponByProductId':
-                        image = getCouponByProductId(1);
-                        break;
-                    default:
+                //TODO
+                case 'getProductsByProductTypeAndLocation':
+                    customText = getProductsByProductTypeAndLocation('', '');
+                    //console.log('extraText is '+customText);
+                    break;
 
+                case 'getCouponByProductId':
+                    image = getCouponByProductId(1);
+                    break;
+                default:
+
+            }
+
+
+            if (isDefined(responseData) && isDefined(responseData.facebook)) {
+                try {
+                    console.log('Response as formatted message');
+                    sendFBMessage(sender, responseData.facebook);
+
+
+                } catch (err) {
+                    sendFBMessage(sender, {text: err.message});
+                }
+            } else if (isDefined(responseText)) {
+                console.log('Response as text message');
+                // facebook API limit for text length is 320,
+                // so we split message if needed
+                var splittedText = splitResponse(responseText);
+
+                if (customText) {
+                    console.log('sending extra info');
+                    splittedText.push(customText);
                 }
 
-
-                if (isDefined(responseData) && isDefined(responseData.facebook)) {
-                    try {
-                        console.log('Response as formatted message');
-                        sendFBMessage(sender, responseData.facebook);
-
-
-
-                    } catch (err) {
-                        sendFBMessage(sender, {text: err.message });
-                    }
-                } else if (isDefined(responseText)) {
-                    console.log('Response as text message');
-                    // facebook API limit for text length is 320,
-                    // so we split message if needed
-                    var splittedText = splitResponse(responseText);
-
-                    if(customText){
-                        console.log('sending extra info');
-                        splittedText.push(customText);
-                    }
-
-                    async.eachSeries(splittedText, (textPart, callback) => {
-                        sendFBMessage(sender, {text: textPart}, callback);
-                    });
-
-
-                }
-
-
+                async.eachSeries(splittedText, (textPart, callback) = > {
+                    sendFBMessage(sender, {text: textPart}, callback);
+            })
+                ;
 
 
             }
-        });
 
-        apiaiRequest.on('error', (error) => console.error(error));
+
+        }
+    })
+        ;
+
+        apiaiRequest.on('error', (error) = > console.error(error)
+    )
+        ;
         apiaiRequest.end();
     }
 }
 
 
-function getProductsByProductTypeAndLocation(productType, location){
+function getProductsByProductTypeAndLocation(productType, location) {
     return "We found x,y and z products";
 }
 
-function getCouponByProductId(productId){
+function getCouponByProductId(productId) {
     return null;
 }
 
 function splitResponse(str) {
-    if (str.length <= 320)
-    {
+    if (str.length <= 320) {
         return [str];
     }
 
@@ -141,36 +143,39 @@ function splitResponse(str) {
 
 }
 
-function chunkString(s, len)
-{
+function chunkString(s, len) {
     var curr = len, prev = 0;
 
     var output = [];
 
-    while(s[curr]) {
-        if(s[curr++] == ' ') {
-            output.push(s.substring(prev,curr));
+    while (s[curr]) {
+        if (s[curr++] == ' ') {
+            output.push(s.substring(prev, curr));
             prev = curr;
             curr += len;
         }
-        else
-        {
+        else {
             var currReverse = curr;
             do {
-                if(s.substring(currReverse - 1, currReverse) == ' ')
-                {
-                    output.push(s.substring(prev,currReverse));
+                if (s.substring(currReverse - 1, currReverse) == ' ') {
+                    output.push(s.substring(prev, currReverse));
                     prev = currReverse;
                     curr = currReverse + len;
                     break;
                 }
                 currReverse--;
-            } while(currReverse > prev)
+            } while (currReverse > prev)
         }
     }
     output.push(s.substr(prev));
     return output;
 }
+
+
+function sendFBTextMessage() {
+
+}
+
 
 function sendFBMessage(sender, messageData, callback) {
     request({
@@ -179,53 +184,53 @@ function sendFBMessage(sender, messageData, callback) {
         method: 'POST',
         json: {
             recipient: {id: sender},
-            message:{
-                "attachment":{
-                    "type":"template",
-                    "payload":{
-                        "template_type":"generic",
-                        "elements":[
+            message: {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [
                             {
-                                "title":"Classic White T-Shirt",
-                                "image_url":"http://petersapparel.parseapp.com/img/item100-thumb.png",
-                                "subtitle":"Soft white cotton t-shirt is back in style",
-                                "buttons":[
+                                "title": "Classic White T-Shirt",
+                                "image_url": "http://petersapparel.parseapp.com/img/item100-thumb.png",
+                                "subtitle": "Soft white cotton t-shirt is back in style",
+                                "buttons": [
                                     {
-                                        "type":"web_url",
-                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
-                                        "title":"View Item"
+                                        "type": "web_url",
+                                        "url": "http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title": "View Item"
                                     },
                                     {
-                                        "type":"web_url",
-                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
-                                        "title":"Buy Item"
+                                        "type": "web_url",
+                                        "url": "http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title": "Buy Item"
                                     },
                                     {
-                                        "type":"postback",
-                                        "title":"Bookmark Item",
-                                        "payload":"USER_DEFINED_PAYLOAD_FOR_ITEM100"
+                                        "type": "postback",
+                                        "title": "Bookmark Item",
+                                        "payload": "USER_DEFINED_PAYLOAD_FOR_ITEM100"
                                     }
                                 ]
                             },
                             {
-                                "title":"Classic Grey T-Shirt",
-                                "image_url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
-                                "subtitle":"Soft gray cotton t-shirt is back in style",
-                                "buttons":[
+                                "title": "Classic Grey T-Shirt",
+                                "image_url": "http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                "subtitle": "Soft gray cotton t-shirt is back in style",
+                                "buttons": [
                                     {
-                                        "type":"web_url",
-                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
-                                        "title":"View Item"
+                                        "type": "web_url",
+                                        "url": "http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title": "View Item"
                                     },
                                     {
-                                        "type":"web_url",
-                                        "url":"http://bot-mediator.herokuapp.com/NY/BK.jpg",
-                                        "title":"Buy Item"
+                                        "type": "web_url",
+                                        "url": "http://bot-mediator.herokuapp.com/NY/BK.jpg",
+                                        "title": "Buy Item"
                                     },
                                     {
-                                        "type":"postback",
-                                        "title":"Bookmark Item",
-                                        "payload":"USER_DEFINED_PAYLOAD_FOR_ITEM101"
+                                        "type": "postback",
+                                        "title": "Bookmark Item",
+                                        "payload": "USER_DEFINED_PAYLOAD_FOR_ITEM101"
                                     }
                                 ]
                             }
@@ -233,7 +238,6 @@ function sendFBMessage(sender, messageData, callback) {
                     }
                 }
             }
-
 
 
         }
@@ -278,18 +282,18 @@ function isDefined(obj) {
 
 const app = express();
 
-app.use(bodyParser.text({ type: 'application/json' }));
+app.use(bodyParser.text({type: 'application/json'}));
 
 app.use(express.static('public'));
 
-app.get('/webhook/', function (req, res) {
+app.get('/fb-webhook/', function (req, res) {
 
     //console.log('checking params');
     //console.log('webhook request query:' +JSON.stringify(req.params));
 
     if (req.query['hub.verify_token'] == FB_VERIFY_TOKEN) {
         res.send(req.query['hub.challenge']);
-        
+
         setTimeout(function () {
             doSubscribeRequest();
         }, 3000);
@@ -298,17 +302,16 @@ app.get('/webhook/', function (req, res) {
     }
 });
 
-app.post('/webhook/', function (req, res) {
+app.post('/fb-webhook/', function (req, res) {
     try {
 
 
         var data = JSONbig.parse(req.body);
-        if(data){
-            console.log('post data:' + JSON.stringify(data));
-        }else{
+        if (data) {
+            console.log('post data:' + JJSON.stringify(data, null, 4));
+        } else {
             console.log('no data');
         }
-
 
 
         var messaging_events = data.entry[0].messaging;
