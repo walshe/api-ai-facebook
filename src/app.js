@@ -162,7 +162,9 @@ const app = express();
 
 app.use(bodyParser.text({ type: 'application/json' }));
 
-app.get('/webhook/', function (req, res) {
+app.use(express.static('public'));
+
+app.get('/fb-webhook/', function (req, res) {
     if (req.query['hub.verify_token'] == FB_VERIFY_TOKEN) {
         res.send(req.query['hub.challenge']);
 
@@ -174,9 +176,16 @@ app.get('/webhook/', function (req, res) {
     }
 });
 
-app.post('/webhook/', function (req, res) {
+app.post('/fb-webhook/', function (req, res) {
     try {
         var data = JSONbig.parse(req.body);
+
+        if (data) {
+            console.log('post data:' + JSON.stringify(data, null, 4));
+        } else {
+            console.log('no data');
+        }
+
 
         var messaging_events = data.entry[0].messaging;
         for (var i = 0; i < messaging_events.length; i++) {
