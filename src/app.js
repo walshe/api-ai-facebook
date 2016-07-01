@@ -34,7 +34,7 @@ var db = {
             name: "PJ Clarke's",
             city: "New York",
             url: "http://pjclarkes.com/",
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/P.J._Clarke's.jpg/300px-P.J._Clarke's.jpg",
+            image: "http://www.crainsnewyork.com/apps/pbcsi.dll/storyimage/CN/20100110/SMALLBIZ/301109968/AR/0/P.J.-Clarke's&imageversion=widescreen&maxw=770",
             coupon: "http://bot-mediator.herokuapp.com/UWS/Logo_Restaurants/QR_Code_Coupon/images.png"
         },
         {
