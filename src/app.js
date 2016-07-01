@@ -251,7 +251,7 @@ function sendFBProcessingMessage(sender, typingOnOrOff, callback){
         method: 'POST',
         json: {
             recipient: {id: sender},
-            sender_action: (typingOnOrOff) ? "typing_on" : "typing_off" ;
+            sender_action: (typingOnOrOff) ? "typing_on" : "typing_off"
         }
     }, function (error, response, body) {
         if (error) {
