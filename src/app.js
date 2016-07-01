@@ -179,7 +179,7 @@ app.get('/fb-webhook/', function (req, res) {
 app.post('/fb-webhook/', function (req, res) {
     try {
 
-        console.log('post data:\n' + JSON.stringify(req.body, null, 4));
+        console.log('post data:\n' + JSON.stringify(JSON.parse(req.body), null, 4));
 
         var data = JSONbig.parse(req.body);
 
