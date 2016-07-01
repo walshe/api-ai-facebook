@@ -192,13 +192,13 @@ function processEvent(event) {
             //find coupon for that productId
 
             _.each(db.restaurant, function(restaurant){
-                if(restaurant.productId.toString() == productId){
+                if(restaurant.productId == productId){
                     sendFBImage(sender, restaurant.coupon);
                 }
             })
 
             _.each(db.clothing, function(clothingStore){
-                if(clothingStore.productId.toString() == productId){
+                if(clothingStore.productId == productId){
                     sendFBImage(sender, clothingStore.coupon);
                 }
             })
@@ -339,7 +339,7 @@ function sendFBProductList(sender,products, callback){
 
 
         var postbackPayload = {
-            'productId' : product.id.toString(),
+            'productId' : product.productId,
             'fb_action': 'GET_COUPON'
         };
 
