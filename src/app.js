@@ -178,13 +178,16 @@ app.get('/fb-webhook/', function (req, res) {
 
 app.post('/fb-webhook/', function (req, res) {
     try {
+
+        console.log('post data:\n' + JSON.stringify(req.body, null, 4));
+
         var data = JSONbig.parse(req.body);
 
-        if (data) {
-            console.log('post data:' + JSON.stringify(data, null, 4));
+        /*if (data) {
+            console.log('post data:' + JSON.stringify(req.body, null, 4));
         } else {
             console.log('no data');
-        }
+        }*/
 
 
         var messaging_events = data.entry[0].messaging;
