@@ -463,6 +463,25 @@ app.post('/fb-webhook/', function (req, res) {
 
 });
 
+app.get('/skype-webhook/', function (req, res) {
+    console.log('in skype webhook get');
+});
+
+app.post('/skype-webhook/', function (req, res) {
+    try {
+        console.log('in skype webhook post');
+        return res.status(200).json({
+            status: "ok"
+        });
+    } catch (err) {
+        return res.status(400).json({
+            status: "error",
+            error: err
+        });
+    }
+
+});
+
 app.listen(REST_PORT, function () {
     console.log('Rest service ready on port ' + REST_PORT);
 });
