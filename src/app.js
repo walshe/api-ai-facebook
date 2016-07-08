@@ -109,6 +109,54 @@ function processEventWithLuis(event){
                 console.log('Error sending processing message: ', error);
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error);
+            } else{
+
+                if(response.body.intents){
+                    let topIntent = response.body.intents[0];
+                    if(topIntent.intent == 'getProductByCity'){
+                        if(topIntent.actions[0].triggered){
+
+                            let parameters = topIntent.actions[0].parameters;
+
+                            let productType = '';
+                            let city = '';
+
+                            _.each(parameters, function(parameter){
+                                if(parameter.name == 'product'){
+                                    productType = parameter.value.entity.toLowerCase();
+                                }
+
+                                if(parameter.name == 'city'){
+                                    city = parameter.value.entity;
+                                }
+                            });
+
+                            let products = [];
+                            
+                            if(db[productType]){
+
+                                _.each(db[productType], function(product){
+                                    if(product.city.toUpperCase() == city.toUpperCase()){
+                                        //collect
+                                        products.push(product);
+                                    }
+                                });
+
+                                sendFBProcessingMessage(sender,false);
+
+                                sendFBProductList(sender,products);
+
+
+                            }else{
+                                sendFBMessage(sender, {text: "Could not find any results :(" });
+                            }
+
+
+
+                        }
+                    }
+                }
+
             }
 
             console.log("got response from LUIS:" +JSON.stringify(response));
@@ -174,10 +222,10 @@ function processEventWithApiAi(event) {
                             sendFBProcessingMessage(sender,true);
 
                             //use the product and city to get list from our fake database
-                            var city = response.result.parameters['geo-city-us'];
-                            var productType = response.result.parameters['product'];
+                            let city = response.result.parameters['geo-city-us'];
+                            let productType = response.result.parameters['product'];
 
-                            var products = [];
+                            let products = [];
 
                             if(db[productType]){
 
