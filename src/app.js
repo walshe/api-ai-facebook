@@ -492,6 +492,8 @@ app.post('/fb-webhook/', function (req, res) {
         var messaging_events = data.entry[0].messaging;
         for (var i = 0; i < messaging_events.length; i++) {
             var event = data.entry[0].messaging[i];
+            console.log("agent is ",agent );
+            console.log("MS_LUIS is ",MS_LUIS );
 
             if(agent == API_AI){
                 processEventWithApiAi(event);
