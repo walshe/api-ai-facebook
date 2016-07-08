@@ -110,7 +110,7 @@ function processEventWithLuis(event){
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error);
             } else{
-                console.log("got response from LUIS:" +response.body));
+                console.log("got response from LUIS:" +response.body);
                 if(response.body.intents){
                     let topIntent = response.body.intents[0];
                     if(topIntent.intent == 'getProductByCity'){
