@@ -22,7 +22,7 @@ const sessionIds = new Map();
 const API_AI = 'Api.ai';
 const MS_LUIS = 'LUIS';
 
-const agent = "MS_LUIS"
+var agent = "MS_LUIS";
 
 var db = {
     restaurant : [
@@ -498,15 +498,15 @@ app.post('/fb-webhook/', function (req, res) {
             console.log('test 4' );
             var event = data.entry[0].messaging[i];
 
-            if(agent == API_AI){
+            /*if(agent == API_AI){
                 console.log('process with api.ai');
                 processEventWithApiAi(event);
-            }else if(agent == MS_LUIS){
+            }else if(agent == MS_LUIS){*/
                 console.log('process with luis');
                 processEventWithLuis(event);
-            }else{
+            /*}else{
                 console.log('wtf');
-            }
+            }*/
 
         }
         return res.status(200).json({
