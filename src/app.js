@@ -129,11 +129,11 @@ function processEventWithLuis(event){
 
                             _.each(parameters, function(parameter){
                                 if(parameter.name == 'product'){
-                                    productType = parameter.value.entity.toLowerCase();
+                                    productType = parameter['value'][0].entity.toLowerCase();
                                 }
 
                                 if(parameter.name == 'city'){
-                                    city = parameter.value.entity;
+                                    city = parameter['value'][0].entity;
                                 }
                             });
 
