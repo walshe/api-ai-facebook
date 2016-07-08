@@ -110,11 +110,14 @@ function processEventWithLuis(event){
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error);
             } else{
-                console.log("got response from LUIS:" +JSON.stringify(response.body));
-                if(response.body['intents']){
+
+                var data = JSONbig.parse(response.body);
+
+                console.log("got response from LUIS:" +JSON.stringify(data));
+                if(data['intents']){
                     console.log('got intents');
-                    console.log('got intents' +JSON.stringify(response.body.intents[0]));
-                    let topIntent = response.body.intents[0];
+                    console.log('got intents' +JSON.stringify(data.intents[0]));
+                    let topIntent = data.intents[0];
                     if(topIntent.intent == 'getProductByCity'){
                         console.log('got getProductByCity');
                         if(topIntent.actions[0].triggered){
