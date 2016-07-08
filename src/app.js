@@ -110,12 +110,13 @@ function processEventWithLuis(event){
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error);
             } else{
-                console.log("got response from LUIS:" +response.body);
+                console.log("got response from LUIS:" +JSON.stringify(response.body));
                 if(response.body.intents){
                     let topIntent = response.body.intents[0];
                     if(topIntent.intent == 'getProductByCity'){
+                        console.log('got getProductByCity');
                         if(topIntent.actions[0].triggered){
-
+                            console.log('got trigged');
                             let parameters = topIntent.actions[0].parameters;
 
                             let productType = '';
