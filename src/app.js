@@ -485,14 +485,18 @@ app.post('/fb-webhook/', function (req, res) {
     try {
 
         console.log('post data:\n' + JSON.stringify(JSON.parse(req.body)));
-
+        console.log('test 1' );
         var data = JSONbig.parse(req.body);
-
+        console.log('test 2' );
 
         var messaging_events = data.entry[0].messaging;
+        console.log('test 3' );
         for (var i = 0; i < messaging_events.length; i++) {
+            console.log('test 4' );
             var event = data.entry[0].messaging[i];
+            console.log('test 5' );
             console.log("agent is ",agent );
+            console.log('test 6' );
             console.log("MS_LUIS is ",MS_LUIS );
 
             if(agent == API_AI){
