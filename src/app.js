@@ -19,6 +19,11 @@ const apiAiService = apiai(APIAI_ACCESS_TOKEN, {language: APIAI_LANG, requestSou
 const sessionIds = new Map();
 
 
+const API_AI = 'Api.ai';
+const MS_LUIS = 'LUIS';
+
+const agent = "MS_LUIS"
+
 var db = {
     restaurant : [
         {
@@ -76,7 +81,45 @@ var db = {
     ]
 }
 
-function processEvent(event) {
+
+
+function processEventWithLuis(event){
+    var sender = event.sender.id.toString();
+
+    if (event.message && event.message.text) {
+        var text = event.message.text;
+        // Handle a text message from this sender
+
+        if (!sessionIds.has(sender)) {
+            sessionIds.set(sender, uuid.v1());
+        }
+
+
+        console.log('sending text to LUIS for processing');
+
+        request({
+            url: 'https://api.projectoxford.ai/luis/v1/application?id=29a815c5-3543-4823-8b38-7be8bd113fb0&subscription-key=b33535abc6f9432fba6fa1fd5ace75ed',
+            qs: {q: text},
+            method: 'GET'
+        }, function (error, response, body) {
+            if (error) {
+                console.log('Error sending processing message: ', error);
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error);
+            }
+
+            if (callback) {
+                callback();
+            }
+
+            console.log("got response from LUIS:" +JSON.stringify(response));
+
+        });
+
+    }
+}
+
+function processEventWithApiAi(event) {
     var sender = event.sender.id.toString();
 
     if (event.message && event.message.text) {
@@ -449,7 +492,13 @@ app.post('/fb-webhook/', function (req, res) {
         var messaging_events = data.entry[0].messaging;
         for (var i = 0; i < messaging_events.length; i++) {
             var event = data.entry[0].messaging[i];
-            processEvent(event);
+
+            if(agent == API_AI){
+                processEventWithApiAi(event);
+            }else if(agent == MS_LUIS){
+                processEventWithLuis(event);
+            }
+
         }
         return res.status(200).json({
             status: "ok"
