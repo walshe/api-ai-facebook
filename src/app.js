@@ -112,6 +112,8 @@ function processEventWithLuis(event){
             } else{
                 console.log("got response from LUIS:" +JSON.stringify(response.body));
                 if(response.body.intents){
+                    console.log('got intents');
+                    console.log('got intents' +JSON.stringify(response.body.intents[0]));
                     let topIntent = response.body.intents[0];
                     if(topIntent.intent == 'getProductByCity'){
                         console.log('got getProductByCity');
