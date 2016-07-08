@@ -497,15 +497,15 @@ app.post('/fb-webhook/', function (req, res) {
         for (var i = 0; i < messaging_events.length; i++) {
             console.log('test 4' );
             var event = data.entry[0].messaging[i];
-            console.log('test 5' );
-            console.log("agent is ",agent );
-            console.log('test 6' );
-            console.log("MS_LUIS is ",MS_LUIS );
 
             if(agent == API_AI){
+                console.log('process with api.ai');
                 processEventWithApiAi(event);
             }else if(agent == MS_LUIS){
+                console.log('process with luis');
                 processEventWithLuis(event);
+            }else{
+                console.log('wtf');
             }
 
         }
