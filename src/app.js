@@ -111,10 +111,6 @@ function processEventWithLuis(event){
                 console.log('Error: ', response.body.error);
             }
 
-            if (callback) {
-                callback();
-            }
-
             console.log("got response from LUIS:" +JSON.stringify(response));
 
         });
