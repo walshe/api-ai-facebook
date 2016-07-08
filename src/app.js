@@ -176,7 +176,7 @@ function processEventWithLuis(event){
     }
 
 
-    processPostBack(event);
+    processPostBack(event, sender);
 
 }
 
@@ -282,11 +282,12 @@ function processEventWithApiAi(event) {
     }
 
 
-    processPostBack(event);
+    processPostBack(event, sender);
 
 }
 
-function processPostBack(event){
+function processPostBack(event, sender){
+    console.log('in processPostBack');
     if(event.postback && event.postback.payload){
 
         let payload = JSON.parse(event.postback.payload);
@@ -297,6 +298,8 @@ function processPostBack(event){
 
 
         if(fbAction == 'GET_COUPON'){
+
+            console.log('getting coupon');
 
             //find coupon for that productId
 
