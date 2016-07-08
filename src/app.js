@@ -111,7 +111,7 @@ function processEventWithLuis(event){
                 console.log('Error: ', response.body.error);
             } else{
                 console.log("got response from LUIS:" +JSON.stringify(response.body));
-                if(response.body.intents){
+                if(response.body['intents']){
                     console.log('got intents');
                     console.log('got intents' +JSON.stringify(response.body.intents[0]));
                     let topIntent = response.body.intents[0];
