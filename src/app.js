@@ -174,6 +174,10 @@ function processEventWithLuis(event){
         });
 
     }
+
+
+    processPostBack(event);
+
 }
 
 function processEventWithApiAi(event) {
@@ -278,6 +282,11 @@ function processEventWithApiAi(event) {
     }
 
 
+    processPostBack(event);
+
+}
+
+function processPostBack(event){
     if(event.postback && event.postback.payload){
 
         let payload = JSON.parse(event.postback.payload);
@@ -310,7 +319,6 @@ function processEventWithApiAi(event) {
 
 
     }
-
 }
 
 function splitResponse(str) {
