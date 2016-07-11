@@ -116,8 +116,6 @@ function processEventWithLuis(event){
 
                 console.log("got response from LUIS:" +JSON.stringify(data));
                 if(data['intents']){
-                    console.log('got intents');
-                    console.log('got intents' +JSON.stringify(data['intents'][0]));
                     let topIntent = data['intents'][0];
                     if(topIntent.intent == 'getProductByCity'){
                         console.log('got getProductByCity');
@@ -166,6 +164,8 @@ function processEventWithLuis(event){
 
                         }
                     }
+                }else{
+                    sendFBMessage(sender, {text: "I did'nt understand what you said, please tell me what you are looking for an where e.g. I'm looking for restaurants in New York" });
                 }
 
             }
