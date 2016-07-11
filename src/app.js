@@ -19,10 +19,11 @@ const apiAiService = apiai(APIAI_ACCESS_TOKEN, {language: APIAI_LANG, requestSou
 const sessionIds = new Map();
 
 
-const API_AI = 'Api.ai';
+const API_AI = 'API_AI';
 const MS_LUIS = 'LUIS';
 
-var agent = "MS_LUIS";
+const AGENT = (process.env.NLP_SERVICE || MS_LUIS);
+
 
 var db = {
     restaurant : [
@@ -563,15 +564,15 @@ app.post('/fb-webhook/', function (req, res) {
             console.log('test 4' );
             var event = data.entry[0].messaging[i];
 
-            /*if(agent == API_AI){
+            if(AGENT == API_AI){
                 console.log('process with api.ai');
                 processEventWithApiAi(event);
-            }else if(agent == MS_LUIS){*/
+            }else if(AGENT == MS_LUIS){
                 console.log('process with luis');
                 processEventWithLuis(event);
-            /*}else{
+            }else{
                 console.log('wtf');
-            }*/
+            }
 
         }
         return res.status(200).json({
