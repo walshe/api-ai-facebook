@@ -163,9 +163,9 @@ function processEventWithLuis(event){
 
 
                         }
+                    }else if(topIntent.intent == 'None'){
+                        sendFBMessage(sender, {text: "I did'nt understand what you said, please tell me what you are looking for an where e.g. I'm looking for restaurants in New York" });
                     }
-                }else{
-                    sendFBMessage(sender, {text: "I did'nt understand what you said, please tell me what you are looking for an where e.g. I'm looking for restaurants in New York" });
                 }
 
             }
